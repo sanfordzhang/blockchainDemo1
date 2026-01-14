@@ -53,6 +53,73 @@ npm run dev
 
 应用将在 `http://localhost:3000` 打开。
 
+## 环境变量配置（可选）
+
+### 关于 `hardhat.config.js` 中的环境变量
+
+项目中的 `hardhat.config.js` 配置了两个环境变量：
+
+```javascript
+url: process.env.SEPOLIA_RPC_URL || "",
+accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : []
+```
+
+**重要说明：**
+
+- ✅ **当前DApp通过前端操作，无需配置这些环境变量**
+- ⚠️ 这些变量仅在使用Hardhat脚本部署合约时需要
+- ✅ 前端通过MetaMask连接，使用MetaMask的签名，不需要私钥
+- 🔐 环境变量从项目的 `.env` 文件中读取
+
+### 何时需要配置环境变量？
+
+**需要配置的情况：**
+- 使用Hardhat脚本自动化部署合约
+- 运行测试脚本
+- CI/CD自动化部署流程
+
+**不需要配置的情况：**
+- 通过前端界面部署合约（本项目的使用方式）
+- 只使用MetaMask交互
+- 运行 `npm run dev` 启动开发服务器
+
+### 如何配置（如果需要）
+
+1. **创建 `.env` 文件**
+
+参考 `.env.example` 文件创建配置：
+
+```bash
+# 复制示例文件
+cp .env.example .env
+```
+
+2. **编辑 `.env` 文件**
+
+```env
+# Sepolia RPC URL（使用公共RPC或从Infura/Alchemy获取）
+SEPOLIA_RPC_URL=https://rpc.sepolia.org
+
+# MetaMask账户私钥（仅用于测试，不要使用主网私钥！）
+# 获取方式：MetaMask -> 账户详情 -> 导出私钥
+PRIVATE_KEY=your_private_key_here
+```
+
+3. **安全提示**
+
+⚠️ 永远不要将包含真实私钥的 `.env` 文件提交到Git
+✅ `.env` 文件已在 `.gitignore` 中自动排除
+
+详细配置说明请参考 [ENV_SETUP.md](./ENV_SETUP.md)
+
+### 4. 启动开发服务器
+
+```bash
+npm run dev
+```
+
+应用将在 `http://localhost:3000` 打开。
+
 ## 使用说明
 
 ### 前置条件
