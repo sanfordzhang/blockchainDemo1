@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleToken DApp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status.connected {
+            border-left-color: #28a745;
+        }
+        
+        .status.disconnected {
+            border-left-color: #dc3545;
+        }
+        
+        .status strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .status span {
+            color: #666;
+            word-break: break-all;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .button-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        
+        .button-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(56, 239, 125, 0.4);
+        }
+        
+        .button-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .button-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
+        }
+        
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .contract-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .contract-info.show {
+            display: block;
+        }
+        
+        .contract-info p {
+            margin: 8px 0;
+            color: #1565c0;
+            word-break: break-all;
+        }
+        
+        .balance-display {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .balance-display.show {
+            display: block;
+        }
+        
+        .balance-display h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .balance-display .amount {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .network-info {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🪙 SimpleToken DApp</h1>
+        <p class="subtitle">基于Sepolia测试网络的代币管理应用</p>
+        
+        <div class="section">
+            <h2>🔌 网络连接</h2>
+            <div class="network-info">
+                请确保MetaMask已连接到Sepolia测试网络
+            </div>
+            <div class="status disconnected" id="connectionStatus">
+                <strong>连接状态:</strong>
+                <span>未连接</span>
+            </div>
+            <button class="button button-primary" id="connectBtn" onclick="connectWallet()">
+                连接MetaMask钱包
+            </button>
+        </div>
+        
+        <div class="section" id="deploySection" style="display: none;">
+            <h2>📜 部署合约</h2>
+            <div class="input-group">
+                <label>代币名称</label>
+                <input type="text" id="tokenName" value="My Token" placeholder="例如: My Token">
+            </div>
+            <div class="input-group">
+                <label>代币符号</label>
+                <input type="text" id="tokenSymbol" value="MTK" placeholder="例如: MTK">
+            </div>
+            <div class="input-group">
+                <label>初始供应量</label>
+                <input type="number" id="initialSupply" value="1000000" placeholder="例如: 1000000">
+            </div>
+            <button class="button button-success" id="deployBtn" onclick="deployContract()">
+                部署智能合约
+            </button>
+            <div class="error-message" id="deployError"></div>
+            <div class="contract-info" id="contractInfo">
+                <p><strong>合约地址:</strong> <span id="contractAddress"></span></p>
+                <p><strong>部署交易哈希:</strong> <span id="deployTxHash"></span></p>
+            </div>
+        </div>
+        
+        <div class="section" id="interactSection" style="display: none;">
+            <h2>💱 合约交互</h2>
+            <button class="button button-info" id="checkBalanceBtn" onclick="checkBalance()">
+                查询余额
+            </button>
+            <div class="balance-display" id="balanceDisplay">
+                <h3>您的代币余额</h3>
+                <div class="amount" id="balanceAmount"></div>
+            </div>
+            
+            <div class="input-group" style="margin-top: 20px;">
+                <label>接收地址</label>
+                <input type="text" id="transferTo" placeholder="例如: 0x742d35Cc6634C0532925a3b844Bc454e4438f44e">
+            </div>
+            <div class="input-group">
+                <label>转账数量</label>
+                <input type="number" id="transferAmount" placeholder="例如: 100">
+            </div>
+            <button class="button button-primary" id="transferBtn" onclick="transferTokens()">
+                转账
+            </button>
+            <div class="error-message" id="transferError"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+</body>
+</html>
